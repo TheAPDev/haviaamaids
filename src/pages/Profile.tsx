@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { DashboardLayout } from '../components/Layout/DashboardLayout';
 import { Button } from '../components/Button';
 import { useAppContext } from '../context/AppContext';
+import { updateProfile as updateProfileInSupabase } from '../utils/updateProfile';
 import { Save, Upload, User, Mail, Phone, MapPin, Briefcase, Award } from 'lucide-react';
 
 export const Profile: React.FC = () => {
@@ -36,10 +37,35 @@ export const Profile: React.FC = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user) {
+      alert('User not logged in');
+      return;
+    }
+    // Convert skillset string to array for Supabase
+    const skillsetArray = formData.skillset
+      .split(',')
+      .map(s => s.trim())
+      .filter(Boolean);
+    // Map formData to Supabase fields
+    // Only send user_id, do NOT send id
+    const result = await updateProfileInSupabase(user.id, {
+      full_name: formData.name,
+      phone: formData.contactNumber,
+      location: formData.address,
+      experience_years: formData.yearsOfExperience,
+      skillset: skillsetArray,
+      username: formData.email, // or another username field if you have one
+      password: '' // leave blank or handle as needed
+    });
+    // Update local context state as well
     updateProfile(formData);
-    alert('Profile completed successfully! You are now a verified member and can start accepting client requests.');
+    if (result && result.success) {
+      alert('Profile completed successfully! You are now a verified member and can start accepting client requests.');
+    } else {
+      alert('Error saving profile: ' + (result?.message || 'Unknown error'));
+    }
   };
 
   const isFormValid = formData.name && formData.email && formData.contactNumber && 
@@ -66,8 +92,9 @@ export const Profile: React.FC = () => {
                     type="text"
                     name="name"
                     value={formData.name}
-                    onChange={handleInputChange}
-                    className="w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-2 sm:py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 text-xs sm:text-sm md:text-base"
+                    readOnly
+                    disabled
+                    className="w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-2 sm:py-3 border border-gray-200 rounded-xl bg-gray-100 text-gray-400 cursor-not-allowed text-xs sm:text-sm md:text-base"
                     placeholder="Enter your full name"
                     required
                   />
@@ -84,8 +111,9 @@ export const Profile: React.FC = () => {
                     type="email"
                     name="email"
                     value={formData.email}
-                    onChange={handleInputChange}
-                    className="w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-2 sm:py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 text-xs sm:text-sm md:text-base"
+                    readOnly
+                    disabled
+                    className="w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-2 sm:py-3 border border-gray-200 rounded-xl bg-gray-100 text-gray-400 cursor-not-allowed text-xs sm:text-sm md:text-base"
                     placeholder="Enter your email"
                     required
                   />
@@ -102,8 +130,9 @@ export const Profile: React.FC = () => {
                     type="tel"
                     name="contactNumber"
                     value={formData.contactNumber}
-                    onChange={handleInputChange}
-                    className="w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-2 sm:py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 text-xs sm:text-sm md:text-base"
+                    readOnly
+                    disabled
+                    className="w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-2 sm:py-3 border border-gray-200 rounded-xl bg-gray-100 text-gray-400 cursor-not-allowed text-xs sm:text-sm md:text-base"
                     placeholder="Enter your phone number"
                     required
                   />
@@ -120,8 +149,9 @@ export const Profile: React.FC = () => {
                     type="number"
                     name="yearsOfExperience"
                     value={formData.yearsOfExperience}
-                    onChange={handleInputChange}
-                    className="w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-2 sm:py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 text-xs sm:text-sm md:text-base"
+                    readOnly
+                    disabled
+                    className="w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-2 sm:py-3 border border-gray-200 rounded-xl bg-gray-100 text-gray-400 cursor-not-allowed text-xs sm:text-sm md:text-base"
                     placeholder="Years of experience"
                     min="0"
                     required
@@ -139,9 +169,10 @@ export const Profile: React.FC = () => {
                 <textarea
                   name="address"
                   value={formData.address}
-                  onChange={handleInputChange}
+                  readOnly
+                  disabled
                   rows={2}
-                  className="w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-2 sm:py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 resize-none text-xs sm:text-sm md:text-base"
+                  className="w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-2 sm:py-3 border border-gray-200 rounded-xl bg-gray-100 text-gray-400 cursor-not-allowed resize-none text-xs sm:text-sm md:text-base"
                   placeholder="Enter your full address"
                   required
                 />
@@ -157,9 +188,10 @@ export const Profile: React.FC = () => {
                 <textarea
                   name="skillset"
                   value={formData.skillset}
-                  onChange={handleInputChange}
+                  readOnly
+                  disabled
                   rows={3}
-                  className="w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-2 sm:py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 resize-none text-xs sm:text-sm md:text-base"
+                  className="w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-2 sm:py-3 border border-gray-200 rounded-xl bg-gray-100 text-gray-400 cursor-not-allowed resize-none text-xs sm:text-sm md:text-base"
                   placeholder="Describe your skills and services (e.g., house cleaning, laundry, cooking, organizing)"
                   required
                 />

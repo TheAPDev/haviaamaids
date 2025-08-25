@@ -60,9 +60,9 @@ export const Dashboard: React.FC = () => {
               <div className="ml-2 sm:ml-3">
                 <p className="text-xs sm:text-sm md:text-base text-yellow-700">
                   <strong>Verification Pending:</strong> Please complete your profile to get verified and start accepting client requests.
-                  <a href="/profile" className="ml-1 sm:ml-2 font-medium underline hover:text-yellow-800 block sm:inline mt-1 sm:mt-0">
+                  <span className="ml-1 sm:ml-2 font-medium text-yellow-800 block sm:inline mt-1 sm:mt-0">
                     Complete Profile →
-                  </a>
+                  </span>
                 </p>
               </div>
             </div>
