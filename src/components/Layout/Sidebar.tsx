@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Clock, Ticket, Settings, User } from 'lucide-react';
+import { Home, Clock, Ticket, Settings, User as UserIcon } from 'lucide-react';
+import type { User } from '../../types';
 import { useAppContext } from '../../context/AppContext';
 
 export const Sidebar: React.FC = () => {
@@ -25,6 +26,7 @@ export const Sidebar: React.FC = () => {
   const menuItems = [
     { path: '/dashboard', icon: Home, label: 'Home' },
     { path: '/active-sessions', icon: Clock, label: 'Active Sessions' },
+    { path: '/find-maids', icon: UserIcon, label: 'Find Maids Near You', comingSoon: true },
     { path: '/paid-leave', icon: Ticket, label: 'Paid Leave Token', disabled: true },
   ];
 
@@ -37,7 +39,7 @@ export const Sidebar: React.FC = () => {
         <div className="bg-white rounded-2xl p-3 sm:p-4 lg:p-6 mb-4 sm:mb-6 md:mb-8 shadow-lg">
           <div className="flex items-center space-x-2 sm:space-x-3 md:space-x-4">
             <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
-              <User className="w-5 h-5 sm:w-6 sm:h-6 lg:w-8 lg:h-8 text-white" />
+              <UserIcon className="w-5 h-5 sm:w-6 sm:h-6 lg:w-8 lg:h-8 text-white" />
             </div>
             <div className="flex-1 min-w-0">
               <h3 className="text-xs sm:text-sm lg:text-lg font-semibold text-gray-800 truncate" title={user?.name || user?.email || 'Complete Profile'}>
@@ -64,6 +66,14 @@ export const Sidebar: React.FC = () => {
                   <item.icon className="w-4 h-4 sm:w-4 sm:h-4 lg:w-5 lg:h-5 flex-shrink-0" />
                   <span className="font-medium text-xs sm:text-sm lg:text-base truncate">{item.label}</span>
                   <span className="ml-auto text-xs bg-gray-200 px-1 sm:px-2 py-1 rounded-full whitespace-nowrap hidden md:inline">
+                    Coming Soon
+                  </span>
+                </div>
+              ) : item.comingSoon ? (
+                <div className="flex items-center space-x-2 sm:space-x-2 lg:space-x-3 p-2 sm:p-3 lg:p-4 rounded-xl text-blue-400 cursor-not-allowed bg-blue-100">
+                  <item.icon className="w-4 h-4 sm:w-4 sm:h-4 lg:w-5 lg:h-5 flex-shrink-0" />
+                  <span className="font-medium text-xs sm:text-sm lg:text-base truncate">{item.label}</span>
+                  <span className="ml-auto text-xs bg-blue-200 px-1 sm:px-2 py-1 rounded-full whitespace-nowrap hidden md:inline">
                     Coming Soon
                   </span>
                 </div>

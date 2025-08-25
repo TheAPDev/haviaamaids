@@ -6,6 +6,7 @@ import { Auth } from './pages/Auth';
 import { Dashboard } from './pages/Dashboard';
 import { ActiveSessions } from './pages/ActiveSessions';
 import { Profile } from './pages/Profile';
+import FindMaids from './pages/FindMaids';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/auth" element={<Auth />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/active-sessions" element={<ActiveSessions />} />
+          <Route path="/find-maids" element={<FindMaids />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
